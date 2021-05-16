@@ -3,9 +3,11 @@ import json
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, response
 from django.shortcuts import render, redirect
 from django.urls import reverse
+import requests
+
 
 # Create your views here.
 @csrf_exempt
@@ -17,12 +19,11 @@ def index(request):
             for k1, v1 in v.items():
                 for k2 in v1:
                     capacity = v1
-        
+    
 
         for i in range(len(capacity)):
             if capacity[i]['sessions'][0]['min_age_limit'] == 18:
-                #above18 = capacity[i]['name']
-                #print(f'{above18} is for above 18')
+  
                 if capacity[i]['sessions'][0]['available_capacity'] != 0:
                     n = capacity[i]['name']
                     ava_slots = capacity[i]['sessions'][0]['available_capacity']
@@ -35,12 +36,9 @@ def index(request):
                         )
                 else:
                     print('no slots')
-            #else:
-                #above45 = capacity[i]['name']
-                #print(f'{above45} is for 45 and above')    
-       
-
+     
         return JsonResponse({'message': 'done'}, status = 201)
         
     else:
         return render(request, "cowin_alert/index.html")
+
