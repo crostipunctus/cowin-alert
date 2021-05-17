@@ -10,35 +10,28 @@ import requests
 
 
 # Create your views here.
-@csrf_exempt
-def index(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        for k, v in data.items():
-            for k1, v1 in v.items():
-                for k2 in v1:
-                    capacity = v1
+
+def py_api(request):
+  headers = {'user-agent': 'Safari/14.1 (Macintosh; Intel macOS 11_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
+  response = requests.get("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=294&date=16-05-2021", headers=headers)
+  data = response.json()
+
+  for i in range(len(data['centers'])):
+    if data['centers'][i]['sessions'][0]['min_age_limit'] == 18:
+      names = data['centers'][i]['name']
+      if data['centers'][i]['sessions'][0]['available_capacity'] > 0:
+        print(names)
+        av_slots = data['centers'][i]['sessions'][0]['available_capacity'] 
+        subject = 'Slots available!'
+        message = f'{av_slots} available at {names}'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = ['rshan.ali@gmail.com']
+        send_mail(subject, message, email_from, recipient_list
+            )
+
+
     
-
-        for i in range(len(capacity)):
-            if capacity[i]['sessions'][0]['min_age_limit'] == 18:
-  
-                if capacity[i]['sessions'][0]['available_capacity'] != 0:
-                    n = capacity[i]['name']
-                    ava_slots = capacity[i]['sessions'][0]['available_capacity']
-                    print (f'{n} => {ava_slots}')
-                    subject = 'Slots available!'
-                    message = f'{ava_slots} available at {n}'
-                    email_from = settings.EMAIL_HOST_USER
-                    recipient_list = ['rshan.ali@gmail.com']
-                    send_mail(subject, message, email_from, recipient_list
-                        )
-                else:
-                    print('no slots')
-     
-        return JsonResponse({'message': 'done'}, status = 201)
-        
-    else:
-        return render(request, "cowin_alert/index.html")
-
+      
+  return render(request, 'cowin_alert/py_api.html', {
+    'names': names
+  })
