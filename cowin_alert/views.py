@@ -4,20 +4,24 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-import requests, threading, time
+import requests, threading, time, datetime
+from datetime import date
 
 
 # Create your views here.
 
-def apicall():
+def apicall(district_id):
   headers = {'user-agent': 'Safari/14.1 (Macintosh; Intel macOS 11_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
-  response = requests.get("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=294&date=17-05-2021", headers=headers)
+  d = date.today()
+  today = d.strftime("%d-%m-%Y")
+  response = requests.get(f"https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id={district_id}&date={today}", headers=headers)
+  print(response.status_code)
   data = response.json()
+  
+  emails = ['rshan.ali@gmail.com', 'sumonach@gmail.com', 'avneeshn@gmail.com']
   for i in range(len(data['centers'])):
-    all_names = data['centers'][i]['name']
     if data['centers'][i]['sessions'][0]['min_age_limit'] == 18:
       names = data['centers'][i]['name']
-      
       if data['centers'][i]['sessions'][0]['available_capacity_dose1'] > 0:
         slots = data['centers'][i]['sessions'][0]['available_capacity']
         print(names)
@@ -30,12 +34,16 @@ def apicall():
         send_mail(subject, message, email_from, recipient_list)
       else: 
         print('no slots')
+    else:
+      print('no slots for 18-44')
+      
 
-  threading.Timer(5, apicall).start()
+  
 
 
 def py_api(request):
-  apicall()
-    
+  
+  apicall(726)
+  
   return HttpResponse('ok')
 
