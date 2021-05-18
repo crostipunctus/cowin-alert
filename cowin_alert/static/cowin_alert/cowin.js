@@ -2,9 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   
-  let slots = document.querySelector("#slots")
-  
-  slots.onclick = function av_slots() {
+
   
   window.setInterval(function() {
   
@@ -33,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   
   
-  }
+  
   
   
   
