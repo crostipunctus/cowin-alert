@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   
-
+let start = document.querySelector('#start')
+start.onclick = function () {
   
   window.setInterval(function() {
   
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   
   
-  
+}
   
   })
   
