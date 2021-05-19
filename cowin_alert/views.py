@@ -9,6 +9,8 @@ import requests, threading, time, datetime
 from datetime import date
 import schedule, json 
 from django.views.decorators.csrf import csrf_exempt
+from .models import Slots
+
 
 
 # Create your views here.
@@ -17,27 +19,23 @@ from django.views.decorators.csrf import csrf_exempt
 def py_api(request):
   if request.method == "POST":
     data = json.loads(request.body)
-    
-    emails = ['rshan.ali@gmail.com', 'sumonach@gmail.com', 'avneeshn@gmail.com']
+    my_email = ['rshan.ali@gmail.com']
+    all_emails = ['sumonach@gmail.com', 'avneeshn@gmail.com']
+    slots_dict = {}
     
     for i in range(len(data['centers']['centers'])):
-      if data['centers']['centers'][i]['sessions'][0]['min_age_limit'] == 18:
+      if data['centers']['centers'][i]['sessions'][0]['min_age_limit'] == 45:
         names = data['centers']['centers'][i]['name']
-        print(names)
-        if data['centers']['centers'][i]['sessions'][0]['available_capacity'] > 0:
-          slots = data['centers']['centers'][i]['sessions'][0]['available_capacity']
-          print(f'{slots} slots available at {names}')
-          #print(slots)
-          av_slots = data['centers']['centers'][i]['sessions'][0]['available_capacity'] 
-          subject = 'Slots available!'
-          message = f'{av_slots} available at {names}. Visit https://selfregistration.cowin.gov.in to book.'
-          email_from = settings.EMAIL_HOST_USER
-          recipient_list = emails
-          send_mail(subject, message, email_from, recipient_list)
+        if data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1'] == 0:
+          slots = data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1']
+          slots_dict[f'{names}'] = slots
+          
         else: 
           print('no slots')
-      
-    
+
+    new = Slots(data = slots_dict)
+    new.save()
+
     return JsonResponse('ok', safe=False)
    
     
