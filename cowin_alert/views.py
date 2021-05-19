@@ -10,6 +10,7 @@ from datetime import date
 import schedule, json 
 from django.views.decorators.csrf import csrf_exempt
 from .models import Slots
+import pprint
 
 
 
@@ -24,7 +25,7 @@ def py_api(request):
     slots_dict = {}
     
     for i in range(len(data['centers']['centers'])):
-      if data['centers']['centers'][i]['sessions'][0]['min_age_limit'] == 45:
+      if data['centers']['centers'][i]['sessions'][0]['min_age_limit'] == 18:
         names = data['centers']['centers'][i]['name']
         if data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1'] == 0:
           slots = data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1']
@@ -33,8 +34,43 @@ def py_api(request):
         else: 
           print('no slots')
 
-    new = Slots(data = slots_dict)
-    new.save()
+
+    
+   
+    print(slots_dict)
+    objs = Slots.objects.all()
+
+    if objs:
+      ob = Slots.objects.first()
+      value = getattr(ob, 'data')
+      print(value)
+      if value == slots_dict:
+        print('same values')
+      else:
+        Slots.objects.filter(pk=1).update(data=slots_dict)
+        print('value updated')
+        subject = 'Slots available!'
+        message = f'{slots_dict}. Visit https://selfregistration.cowin.gov.in to book.'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = my_email
+        send_mail(subject, message, email_from, recipient_list)
+      
+    else:
+      if slots_dict:
+        new = Slots(data = slots_dict)
+        new.save()
+        slot_str = str(slots_dict)
+        print(slot_str)
+        subject = 'Slots available!'
+        message = f'{slots_dict}. Visit https://selfregistration.cowin.gov.in to book.'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = my_email
+        send_mail(subject, message, email_from, recipient_list)
+      else:
+        print('no slots')
+      
+
+    
 
     return JsonResponse('ok', safe=False)
    
