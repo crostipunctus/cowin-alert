@@ -1,13 +1,30 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+let today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+let yyyy = today.getFullYear();
 
-  
+today = dd + '-' + mm + '-' + yyyy;
+console.log(today)
+
 let start = document.querySelector('#start')
-start.onclick = function () {
+
+fetch('user_dict')
+  .then(response => response.json())
+  .then(data1 => 
   
+
+  start.onclick = function () {
+  
+  
+
   window.setInterval(function() {
+    data1.forEach(element => {
+      
+      console.log(element)
   
-    fetch('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=725&date=19-05-2021')
+    fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${element}&date=${today}`)
       
     
               .then(response => response.json())
@@ -19,6 +36,7 @@ start.onclick = function () {
                 method: 'POST',
                 body: JSON.stringify({
                     centers: data,
+                    id: `${element}`
                            
                 })
   
@@ -27,7 +45,7 @@ start.onclick = function () {
             
             })
   
-  
+          })
   }, 5000)
   
   
@@ -36,6 +54,7 @@ start.onclick = function () {
   
 }
   
+  )
   })
   
   

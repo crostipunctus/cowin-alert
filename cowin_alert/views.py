@@ -9,8 +9,8 @@ import requests, threading, time, datetime
 from datetime import date
 import schedule, json 
 from django.views.decorators.csrf import csrf_exempt
-from .models import Slots
-import pprint
+from .models import Slots, District
+from django.contrib.auth.models import User
 
 
 
@@ -35,8 +35,6 @@ def py_api(request):
           print('no slots')
 
 
-    
-   
     print(slots_dict)
     objs = Slots.objects.all()
 
@@ -70,7 +68,6 @@ def py_api(request):
         print('no slots')
       
 
-    
 
     return JsonResponse('ok', safe=False)
    
@@ -79,3 +76,9 @@ def py_api(request):
     return render(request, 'cowin_alert/index.html')
 
 
+def user_dict(request):
+  #emails = (User.objects.filter(is_active=True).values_list('email', flat=True))
+  district_ids = list(District.objects.all().values_list('district_id', flat=True))
+  
+  print(district_ids)
+  return JsonResponse(district_ids, safe=False)
