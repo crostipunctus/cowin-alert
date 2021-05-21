@@ -9,7 +9,7 @@ import requests, threading, time, datetime
 from datetime import date
 import schedule, json 
 from django.views.decorators.csrf import csrf_exempt
-from .models import Slots, District
+from .models import District
 from django.contrib.auth.models import User
 
 
@@ -20,6 +20,8 @@ from django.contrib.auth.models import User
 def py_api(request):
   if request.method == "POST":
     data = json.loads(request.body)
+    district_id = data.get('id')
+    print(district_id)
     my_email = ['rshan.ali@gmail.com']
     all_emails = ['sumonach@gmail.com', 'avneeshn@gmail.com']
     slots_dict = {}
@@ -35,7 +37,7 @@ def py_api(request):
           print('no slots')
 
 
-    print(slots_dict)
+
     objs = Slots.objects.all()
 
     if objs:

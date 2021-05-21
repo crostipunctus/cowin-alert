@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Slots, District
+from .models import District
 
 # Register your models here.
 
-admin.site.register(Slots)
+
 admin.site.register(District)
