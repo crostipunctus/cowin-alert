@@ -1,0 +1,1 @@
+web: gunicorn cowin_alert.wsgi --log-file -

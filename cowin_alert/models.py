@@ -13,6 +13,7 @@ class District(models.Model):
 class User_details(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   user_district = models.ForeignKey(District, on_delete=models.CASCADE)
+  dose_2 = models.BooleanField(default=False)
 
 
 
@@ -23,4 +24,4 @@ class Center(models.Model):
   center_slots_dose2 = models.IntegerField(default = 0, blank = True)
 
   def __str__(self):
-    return f'{self.center_name} has {self.center_slots_dose1} slots'
+    return f'{self.center_name} has {self.center_slots_dose1} dose one slots and {self.center_slots_dose2} dose two slots'
