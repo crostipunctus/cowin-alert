@@ -19,7 +19,8 @@ class User_details(models.Model):
 class Center(models.Model):
   center_district = models.ForeignKey(District, on_delete=models.CASCADE)
   center_name = models.CharField(max_length=100)
-  center_slots = models.IntegerField()
+  center_slots_dose1 = models.IntegerField()
+  center_slots_dose2 = models.IntegerField(default = 0, blank = True)
 
   def __str__(self):
-    return f'{self.center_name} has {self.center_slots} slots'
+    return f'{self.center_name} has {self.center_slots_dose1} slots'

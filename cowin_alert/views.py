@@ -2,14 +2,10 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import reverse
-import requests, threading, time, datetime
-from datetime import date
-import schedule, json 
+from django.shortcuts import render
+import json 
 from django.views.decorators.csrf import csrf_exempt
-from .models import District
+from .models import District, Center, User_details
 from django.contrib.auth.models import User
 
 
@@ -21,54 +17,46 @@ def py_api(request):
   if request.method == "POST":
     data = json.loads(request.body)
     district_id = data.get('id')
-    print(district_id)
-    my_email = ['rshan.ali@gmail.com']
-    all_emails = ['sumonach@gmail.com', 'avneeshn@gmail.com']
+    district = District.objects.get(district_id = district_id)
     slots_dict = {}
-    
+    names = []
+   
     for i in range(len(data['centers']['centers'])):
       if data['centers']['centers'][i]['sessions'][0]['min_age_limit'] == 18:
-        names = data['centers']['centers'][i]['name']
-        if data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1'] == 0:
-          slots = data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1']
-          slots_dict[f'{names}'] = slots
-          
-        else: 
-          print('no slots')
+        names.append(data['centers']['centers'][i]['name'])
+        name = data['centers']['centers'][i]['name']
+        slots_dict[f'{name}'] = data['centers']['centers'][i]['sessions'][0]['available_capacity_dose1']
+        print(slots_dict)
 
+     
+    x = list(User_details.objects.filter(user_district=district).values_list('user', flat=True))   
+  
+    user_emails = list(User.objects.filter(pk__in=x).values_list('email', flat=True))
+  
 
-
-    objs = Slots.objects.all()
-
-    if objs:
-      ob = Slots.objects.first()
-      value = getattr(ob, 'data')
-      print(value)
-      if value == slots_dict:
-        print('same values')
+    for name in slots_dict:
+      if Center.objects.filter(center_name = name).exists():
+        old_slots = list(Center.objects.filter(center_name = name).values_list('center_slots_dose1', flat=True))
+        if old_slots[0] != slots_dict[name]:
+          Center.objects.filter(center_name = name).update(center_slots_dose1 = slots_dict[name])
+          if slots_dict[name] > 0:
+            subject = 'Slots available!'
+            message = f'{slots_dict[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = user_emails
+            send_mail(subject, message, email_from, recipient_list)
+        else:
+          print('same value')
       else:
-        Slots.objects.filter(pk=1).update(data=slots_dict)
-        print('value updated')
-        subject = 'Slots available!'
-        message = f'{slots_dict}. Visit https://selfregistration.cowin.gov.in to book.'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = my_email
-        send_mail(subject, message, email_from, recipient_list)
-      
-    else:
-      if slots_dict:
-        new = Slots(data = slots_dict)
-        new.save()
-        slot_str = str(slots_dict)
-        print(slot_str)
-        subject = 'Slots available!'
-        message = f'{slots_dict}. Visit https://selfregistration.cowin.gov.in to book.'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = my_email
-        send_mail(subject, message, email_from, recipient_list)
-      else:
-        print('no slots')
-      
+          new = Center(center_district = district, center_name = name, center_slots_dose1 = slots_dict[name])
+          new.save()
+          if slots_dict[name] > 0:
+            subject = 'Slots available!'
+            message = f'{slots_dict[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = user_emails
+            send_mail(subject, message, email_from, recipient_list)
+            
 
 
     return JsonResponse('ok', safe=False)
@@ -79,8 +67,5 @@ def py_api(request):
 
 
 def user_dict(request):
-  #emails = (User.objects.filter(is_active=True).values_list('email', flat=True))
   district_ids = list(District.objects.all().values_list('district_id', flat=True))
-  
-  print(district_ids)
   return JsonResponse(district_ids, safe=False)
