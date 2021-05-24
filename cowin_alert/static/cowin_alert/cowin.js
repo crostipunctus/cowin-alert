@@ -17,13 +17,29 @@ fetch('user_dict')
 
   start.onclick = function () {
   
-  
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;}
+
 
   window.setInterval(function() {
     data1.forEach(element => {
       
       console.log(element)
   
+
+
     fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${element}&date=${today}`)
       
     
@@ -36,7 +52,8 @@ fetch('user_dict')
                 method: 'POST',
                 body: JSON.stringify({
                     centers: data,
-                    id: `${element}`
+                    id: `${element}`,
+                    headers: {"X-CSRFToken": getCookie("csrftoken")}
                            
                 })
   
