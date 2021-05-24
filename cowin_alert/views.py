@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
-@csrf_exempt
+
 def py_api(request):
   if request.method == "POST":
     data = json.loads(request.body)
@@ -53,7 +53,7 @@ def py_api(request):
            Center.objects.filter(center_name = name).update(center_slots_dose2 = slots_dict_dose2[name])
            if slots_dict_dose2[name] > 0:
             subject = 'Dose 2 slots available!'
-            message = f'{slots_dict_dose2[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
+            message = f'{slots_dict_dose2[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after you took your first dose.'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = user_emails_dose2
             send_mail(subject, message, email_from, recipient_list)
@@ -72,7 +72,7 @@ def py_api(request):
             send_mail(subject, message, email_from, recipient_list)
           elif slots_dict_dose2[name] > 0:
             subject = 'Dose 2 slots available!'
-            message = f'{slots_dict_dose2[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
+            message = f'{slots_dict_dose2[name]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after you took your first dose.'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = user_emails_dose2
             send_mail(subject, message, email_from, recipient_list)
