@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import render
 import json 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token, ensure_csrf_cookie
 from .models import District, Center, User_details
 from django.contrib.auth.models import User
 
@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
-
+@ensure_csrf_cookie
 def py_api(request):
   if request.method == "POST":
     data = json.loads(request.body)
