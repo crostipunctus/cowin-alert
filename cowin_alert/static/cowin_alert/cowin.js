@@ -32,7 +32,7 @@ fetch('user_dict')
     
               .then(response => response.json())
               .then(data =>  {
-                
+                console.log(data)
                 function getCookie(name) {
                   let cookieValue = null;
                   if (document.cookie && document.cookie !== '') {
