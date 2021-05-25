@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import render
 import json 
-from django.views.decorators.csrf import csrf_exempt, requires_csrf_token, ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import District, Center, User_details
 from django.contrib.auth.models import User
 
