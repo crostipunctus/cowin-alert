@@ -20,9 +20,18 @@ class User_details(models.Model):
 class Center(models.Model):
   center_district = models.ForeignKey(District, on_delete=models.CASCADE)
   center_name = models.CharField(max_length=100)
-  center_slots_dose1 = models.IntegerField(default = 0, blank = True)
-  center_slots_dose2 = models.IntegerField(default = 0, blank = True)
+  
+  def __str__(self):
+    return f'{self.center_name}'
+
+class Slots(models.Model):
+  center_slots = models.ForeignKey(Center, on_delete=models.CASCADE)
+  slots_dose1 = models.IntegerField(default=0, blank=True)
+  slots_dose2 = models.IntegerField(default=0, blank=True)
   session_id = models.TextField(max_length=100)
 
   def __str__(self):
-    return f'{self.center_name} has {self.center_slots_dose1} dose one slots and {self.center_slots_dose2} dose two slots'
+    return f'{self.session_id} => {self.center_slots} has {self.slots_dose1} dose one slots and {self.slots_dose2} dose two slots'
+
+
+

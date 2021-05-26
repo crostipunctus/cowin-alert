@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import District, Center, User_details
+from .models import District, Center, User_details, Slots
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -18,3 +18,4 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Center)
 admin.site.register(District)
+admin.site.register(Slots)
