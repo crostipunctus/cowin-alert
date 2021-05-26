@@ -23,7 +23,6 @@ def py_api(request):
     data = json.loads(request.body)
     district_id = data.get('id')
     district = District.objects.get(district_id = district_id)
-    slots_dict_dose1 = {}
     names = []
 
     dose1_users = list(User_details.objects.filter(user_district=district).filter(dose_2=False).values_list('user', flat=True))   
