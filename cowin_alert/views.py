@@ -53,7 +53,7 @@ def py_api(request):
                 email_from = settings.EMAIL_HOST_USER
                 recipient_list = dose1_user_emails
                 send_mail(subject, message, email_from, recipient_list)
-              elif dose2 > 0:
+              if dose2 > 0:
                 subject = 'Dose 2 slots available!'
                 message = f'{dose2} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after your first dose.'
                 email_from = settings.EMAIL_HOST_USER
@@ -62,6 +62,24 @@ def py_api(request):
           else:
             new_center = Center(center_district=district, center_name=name)
             new_center.save()
+            center1 = Center.objects.get(center_name=name)
+            if Slots.objects.filter(session_id=session_id).exists():
+              print('session id exists')
+            else:
+              new_slots = Slots(center_slots = center1, slots_dose1 = dose1, slots_dose2 = dose2, session_id=session_id)
+              new_slots.save()
+              if dose1 > 0:
+                subject = 'Slots available!'
+                message = f'{dose1} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = dose1_user_emails
+                send_mail(subject, message, email_from, recipient_list)
+              if dose2 > 0:
+                subject = 'Dose 2 slots available!'
+                message = f'{dose2} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after your first dose.'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = dose2_user_emails
+                send_mail(subject, message, email_from, recipient_list)     
 
     
     
