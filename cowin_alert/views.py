@@ -84,7 +84,7 @@ def py_api(request):
                 recipient_list = dose2_user_emails
                 send_mail(subject, message, email_from, recipient_list)     
 
-
+    
     return JsonResponse('ok', safe=False)
    
     
@@ -122,6 +122,7 @@ def register(request):
   else:
       headers = {'User-agent': 'Safari/14.1 (macOS 11.3.1; x64)'}
       response = requests.get('https://cdn-api.co-vin.in/api/v2/admin/location/states', headers=headers)
+      response2 = requests.get()
       states = response.json()
       for i in range(len(states['states'])):
         print(states['states'][i]['state_name'])
