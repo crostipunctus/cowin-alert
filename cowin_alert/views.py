@@ -84,51 +84,6 @@ def py_api(request):
                 recipient_list = dose2_user_emails
                 send_mail(subject, message, email_from, recipient_list)     
 
-    
-    
-  
-    
-    # for name in slots_dict:
-    #   if Center.objects.filter(center_name = name).exists():
-    #     old_slots = list(Center.objects.filter(center_name = name).values_list('center_slots_dose1', flat=True))
-    #     old_session_id = list(Center.objects.filter(center_name = name).values_list('session_id', flat=True))
-    #     old_slots2 = list(Center.objects.filter(center_name = name).values_list('center_slots_dose2', flat=True))
-    #     old_session_id2 = list(Center.objects.filter(center_name = name).values_list('session_id', flat=True))
-    #     if old_session_id != slots_dict[name][1]:
-    #       Center.objects.filter(center_name = name).update(center_slots_dose1 = slots_dict[name][0])
-    #       if slots_dict[name][0] > 0:
-            # subject = 'Slots available!'
-            # message = f'{slots_dict[name][0]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
-            # email_from = settings.EMAIL_HOST_USER
-            # recipient_list = user_emails
-            # send_mail(subject, message, email_from, recipient_list)
-    #     elif old_session_id2 != slots_dict_dose2[name][1]:
-    #        Center.objects.filter(center_name = name).update(center_slots_dose2 = slots_dict_dose2[name][0])
-    #        if slots_dict_dose2[name][0] > 0:
-    #         subject = 'Dose 2 slots available!'
-    #         message = f'{slots_dict_dose2[name][0]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after you took your first dose.'
-    #         email_from = settings.EMAIL_HOST_USER
-    #         recipient_list = user_emails_dose2
-    #         send_mail(subject, message, email_from, recipient_list)
-    #     else:
-    #       print('same value')
-    #   else:
-    #       new = Center(center_district = district, center_name = name, center_slots_dose1 = slots_dict[name][0], center_slots_dose2 = slots_dict_dose2[name][0], session_id=slots_dict[name][1])
-          
-    #       new.save()
-   
-    #       if slots_dict[name][0] > 0:
-    #         subject = 'Slots available!'
-    #         message = f'{slots_dict[name][0]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book.'
-    #         email_from = settings.EMAIL_HOST_USER
-    #         recipient_list = user_emails
-    #         send_mail(subject, message, email_from, recipient_list)
-    #       elif slots_dict_dose2[name][0] > 0:
-    #         subject = 'Dose 2 slots available!'
-    #         message = f'{slots_dict_dose2[name][0]} slots available in {name}. Visit https://selfregistration.cowin.gov.in to book. Note: Second dose will be available only 12 weeks after you took your first dose.'
-    #         email_from = settings.EMAIL_HOST_USER
-    #         recipient_list = user_emails_dose2
-    #         send_mail(subject, message, email_from, recipient_list)
 
     return JsonResponse('ok', safe=False)
    
