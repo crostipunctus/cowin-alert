@@ -12,7 +12,7 @@ class District(models.Model):
 
 class User_details(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
-  user_district = models.ForeignKey(District, on_delete=models.CASCADE)
+  user_district = models.ManyToManyField(District)
   dose_2 = models.BooleanField(default=False)
 
 

@@ -31,6 +31,9 @@ def py_api(request):
     dose1_user_emails = list(User.objects.filter(pk__in=dose1_users).values_list('email', flat=True))
     dose2_user_emails = list(User.objects.filter(pk__in=dose2_users).values_list('email', flat=True))
 
+    print(dose1_user_emails)
+    print(dose2_user_emails)
+
     for i in range(len(data['centers']['centers'])):
       for x in range(len(data['centers']['centers'][i]['sessions'])):
         if data['centers']['centers'][i]['sessions'][x]['min_age_limit'] == 18:
