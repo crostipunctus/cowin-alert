@@ -23,7 +23,6 @@ def py_api(request):
     data = json.loads(request.body)
     district_id = data.get('id')
     district = District.objects.get(district_id = district_id)
-    names = []
 
     dose1_users = list(User_details.objects.filter(user_district=district).filter(dose_2=False).values_list('user', flat=True))   
     dose2_users = list(User_details.objects.filter(user_district=district).filter(dose_2=True).values_list('user', flat=True))
@@ -37,14 +36,15 @@ def py_api(request):
     for i in range(len(data['centers']['centers'])):
       for x in range(len(data['centers']['centers'][i]['sessions'])):
         if data['centers']['centers'][i]['sessions'][x]['min_age_limit'] == 18:
-          names.append(data['centers']['centers'][i]['name'])
+          center_id = data['centers']['centers'][i]['center_id']
           name = data['centers']['centers'][i]['name']
+          print(center_id)
           print(name)
           session_id = data['centers']['centers'][i]['sessions'][x]['session_id']
           dose1 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose1']
           dose2 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose2']
-          if Center.objects.filter(center_name=name).exists():
-            center = Center.objects.get(center_name=name)
+          if Center.objects.filter(center_id=center_id).exists():
+            center = Center.objects.get(center_id=center_id)
             if Slots.objects.filter(session_id=session_id).exists():
               print('session id exists')
             else:
@@ -63,9 +63,9 @@ def py_api(request):
                 recipient_list = dose2_user_emails
                 send_mail(subject, message, email_from, recipient_list)     
           else:
-            new_center = Center(center_district=district, center_name=name)
+            new_center = Center(center_district=district, center_name=name, center_id=center_id)
             new_center.save()
-            center1 = Center.objects.get(center_name=name)
+            center1 = Center.objects.get(center_id=center_id)
             if Slots.objects.filter(session_id=session_id).exists():
               print('session id exists')
             else:

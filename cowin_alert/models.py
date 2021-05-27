@@ -20,6 +20,8 @@ class User_details(models.Model):
 class Center(models.Model):
   center_district = models.ForeignKey(District, on_delete=models.CASCADE)
   center_name = models.CharField(max_length=100)
+  center_id = models.IntegerField()
+  
   
   def __str__(self):
     return f'{self.center_name}'
