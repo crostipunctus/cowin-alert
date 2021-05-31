@@ -7,7 +7,7 @@ from django.db import IntegrityError
 import json 
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import District, Center, User_details, Slots
+from .models import District, Center, User_details, Slots, State
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -23,15 +23,12 @@ def py_api(request):
     data = json.loads(request.body)
     district_id = data.get('id')
     district = District.objects.get(district_id = district_id)
-
+    #print(data)
     dose1_users = list(User_details.objects.filter(user_district=district).filter(dose_2=False).values_list('user', flat=True))   
     dose2_users = list(User_details.objects.filter(user_district=district).filter(dose_2=True).values_list('user', flat=True))
   
     dose1_user_emails = list(User.objects.filter(pk__in=dose1_users).values_list('email', flat=True))
     dose2_user_emails = list(User.objects.filter(pk__in=dose2_users).values_list('email', flat=True))
-
-    print(dose1_user_emails)
-    print(dose2_user_emails)
 
     for i in range(len(data['centers']['centers'])):
       for x in range(len(data['centers']['centers'][i]['sessions'])):
@@ -48,6 +45,7 @@ def py_api(request):
             if Slots.objects.filter(session_id=session_id).exists():
               print('session id exists')
             else:
+              print('new slot added')
               new_slots = Slots(center_slots = center, slots_dose1 = dose1, slots_dose2 = dose2, session_id=session_id)
               new_slots.save()
               if dose1 > 0:
@@ -89,12 +87,17 @@ def py_api(request):
    
     
   else:
+    
     return render(request, 'cowin_alert/index.html')
 
-
+    
+    
 def user_dict(request):
-  district_ids = list(District.objects.all().values_list('district_id', flat=True))
+  users = User.objects.all()
+  districts = list(User_details.objects.filter(user__in=users).values_list('user_district', flat=True))
+  district_ids = list(District.objects.filter(id__in=districts).values_list('district_id', flat=True))
   return JsonResponse(district_ids, safe=False)
+  
 
 
 def register(request):
@@ -120,13 +123,20 @@ def register(request):
             })
         return render(request, 'cowin_alert/thank_you.html')
   else:
-      headers = {'User-agent': 'Safari/14.1 (macOS 11.3.1; x64)'}
-      response = requests.get('https://cdn-api.co-vin.in/api/v2/admin/location/states', headers=headers)
-      response2 = requests.get()
-      states = response.json()
-      for i in range(len(states['states'])):
-        print(states['states'][i]['state_name'])
-      return render(request, "cowin_alert/register.html", {
-        'states': states['states'],
+      states = State.objects.all()
+      return render(request, 'cowin_alert/register.html', {
+        'states': states
+
       })
-  
+      
+
+
+def districts(request):
+  data = json.loads(request.body)
+  state_name = data.get('state')
+  state = State.objects.get(state_name=state_name)
+  districts = list(District.objects.filter(state=state).values_list('district_name', flat=True))
+  print(districts)
+  return JsonResponse(districts, safe=False)
+
+

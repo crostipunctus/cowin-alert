@@ -7,17 +7,17 @@ let yyyy = today.getFullYear();
 
 today = dd + '-' + mm + '-' + yyyy;
 console.log(today)
-
+ 
 let start = document.querySelector('#start')
 
 fetch('user_dict')
   .then(response => response.json())
   .then(data1 => 
   
-
+  
   start.onclick = function () {
   
-    
+    console.log(data1)
 
 
   window.setInterval(function() {
