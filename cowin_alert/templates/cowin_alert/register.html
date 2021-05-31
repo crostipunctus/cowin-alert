@@ -2,14 +2,17 @@
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="{% static 'cowin_alert/register.js' %}"></script>
+  <link href="{% static 'cowin_alert/styles.css' %}" rel="stylesheet">
 </head>
 
- <h2>Register</h2>
+ 
 
  {% if message %}
      <div>{{ message }}</div>
  {% endif %}
 
+ <div class="form">
+    <h2>Register</h2>
  <form action="{% url 'register' %}" method="post">
      {% csrf_token %}
      <div class="form-group">
@@ -25,14 +28,14 @@
          <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
      </div>
      <div class="form-group">
-         <select id="select-states" name='state'>
+         <select class="form-control" id="select-states" name='state'>
              {% for states in states %}
              <option>{{states.state_name}}</option>
              {% endfor %}
          </select>
      </div>
      <div class="form-group" id="districts">
-        <select  name="district" id="select-districts">
+        <select class="form-control" name="district" id="select-districts">
             <option ></option>
         </select>
      </div>
@@ -40,3 +43,4 @@
      <input class="btn btn-primary" type="submit" value="Register">
  </form>
 
+</div>

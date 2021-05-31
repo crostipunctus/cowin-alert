@@ -1,0 +1,21 @@
+
+div.form
+{
+    display: block;
+    text-align: center;
+    padding: 200px;
+}
+form
+{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+
+}
+
+h2 
+{
+  text-align: center;
+  margin: 20px;
+}
