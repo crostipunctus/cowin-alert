@@ -23,7 +23,7 @@ def py_api(request):
     data = json.loads(request.body)
     district_id = data.get('id')
     district = District.objects.get(district_id = district_id)
-    #print(data)
+    print(district)
     dose1_users = list(User_details.objects.filter(user_district=district).filter(dose_2=False).values_list('user', flat=True))   
     dose2_users = list(User_details.objects.filter(user_district=district).filter(dose_2=True).values_list('user', flat=True))
   
@@ -35,15 +35,15 @@ def py_api(request):
         if data['centers']['centers'][i]['sessions'][x]['min_age_limit'] == 18:
           center_id = data['centers']['centers'][i]['center_id']
           name = data['centers']['centers'][i]['name']
-          print(center_id)
-          print(name)
+          # print(center_id)
+          # print(name)
           session_id = data['centers']['centers'][i]['sessions'][x]['session_id']
           dose1 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose1']
           dose2 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose2']
           if Center.objects.filter(center_id=center_id).exists():
             center = Center.objects.get(center_id=center_id)
             if Slots.objects.filter(session_id=session_id).exists():
-              print('session id exists')
+              print('session exists')
             else:
               print('new slot added')
               new_slots = Slots(center_slots = center, slots_dose1 = dose1, slots_dose2 = dose2, session_id=session_id)
@@ -67,6 +67,7 @@ def py_api(request):
             if Slots.objects.filter(session_id=session_id).exists():
               print('session id exists')
             else:
+              print('new slot added')
               new_slots = Slots(center_slots = center1, slots_dose1 = dose1, slots_dose2 = dose2, session_id=session_id)
               new_slots.save()
               if dose1 > 0:
@@ -96,6 +97,7 @@ def user_dict(request):
   users = User.objects.all()
   districts = list(User_details.objects.filter(user__in=users).values_list('user_district', flat=True))
   district_ids = list(District.objects.filter(id__in=districts).values_list('district_id', flat=True))
+  print(district_ids)
   return JsonResponse(district_ids, safe=False)
   
 
@@ -104,25 +106,29 @@ def register(request):
   if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
-        district = request.POST["district"]
-        print(district)
+        district_name = request.POST["district"]
+        district = District.objects.get(district_name=district_name)
 
-        # Ensure password matches confirmation
-        # password = request.POST["password"]
-        # confirmation = request.POST["confirmation"]
-        # if password != confirmation:
-        #     return render(request, "cowin_alert/register.html", {
-        #         "message": "Passwords must match."
-        #     })
+        #Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "cowin_alert/register.html", {
+                "message": "Passwords must match."
+            })
 
-        # # Attempt to create new user
-        # try:
-        #     user = User.objects.create_user(username, email, password)
-        #     user.save()
-        # except IntegrityError:
-        #     return render(request, "cowin_alert/register.html", {
-        #         "message": "Username already taken."
-        #     })
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "cowin_alert/register.html", {
+                "message": "Username already taken."
+            })
+        u = User.objects.get(username=username)
+        User_details.objects.create(user=user)
+        u.user_details.user_district.add(district)
+        
         return render(request, 'cowin_alert/thank_you.html')
   else:
       states = State.objects.all()
