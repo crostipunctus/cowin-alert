@@ -129,7 +129,7 @@ def register(request):
         User_details.objects.create(user=user)
         u.user_details.user_district.add(district)
         
-        return render(request, 'cowin_alert/thank_you.html')
+        return HttpResponseRedirect('py_api')
   else:
       states = State.objects.all()
       return render(request, 'cowin_alert/register.html', {
