@@ -25,15 +25,15 @@
          <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
      </div>
      <div class="form-group">
-         <select id="select-states">
+         <select id="select-states" name='state'>
              {% for states in states %}
              <option>{{states.state_name}}</option>
              {% endfor %}
          </select>
      </div>
      <div class="form-group" id="districts">
-        <select id="select-districts">
-            <option></option>
+        <select  name="district" id="select-districts">
+            <option ></option>
         </select>
      </div>
      

@@ -104,23 +104,25 @@ def register(request):
   if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
+        district = request.POST["district"]
+        print(district)
 
         # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-        if password != confirmation:
-            return render(request, "cowin_alert/register.html", {
-                "message": "Passwords must match."
-            })
+        # password = request.POST["password"]
+        # confirmation = request.POST["confirmation"]
+        # if password != confirmation:
+        #     return render(request, "cowin_alert/register.html", {
+        #         "message": "Passwords must match."
+        #     })
 
-        # Attempt to create new user
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, "cowin_alert/register.html", {
-                "message": "Username already taken."
-            })
+        # # Attempt to create new user
+        # try:
+        #     user = User.objects.create_user(username, email, password)
+        #     user.save()
+        # except IntegrityError:
+        #     return render(request, "cowin_alert/register.html", {
+        #         "message": "Username already taken."
+        #     })
         return render(request, 'cowin_alert/thank_you.html')
   else:
       states = State.objects.all()
