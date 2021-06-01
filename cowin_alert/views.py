@@ -5,13 +5,11 @@ from django.conf import settings
 from django.shortcuts import render
 from django.db import IntegrityError
 import json 
-from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import District, Center, User_details, Slots, State
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-import requests
+from django.http import HttpResponseRedirect, JsonResponse
+
 
 
 
@@ -23,7 +21,7 @@ def py_api(request):
     data = json.loads(request.body)
     district_id = data.get('id')
     district = District.objects.get(district_id = district_id)
-    print(district)
+
     dose1_users = list(User_details.objects.filter(user_district=district).filter(dose_2=False).values_list('user', flat=True))   
     dose2_users = list(User_details.objects.filter(user_district=district).filter(dose_2=True).values_list('user', flat=True))
   
@@ -35,8 +33,6 @@ def py_api(request):
         if data['centers']['centers'][i]['sessions'][x]['min_age_limit'] == 18:
           center_id = data['centers']['centers'][i]['center_id']
           name = data['centers']['centers'][i]['name']
-          # print(center_id)
-          # print(name)
           session_id = data['centers']['centers'][i]['sessions'][x]['session_id']
           dose1 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose1']
           dose2 = data['centers']['centers'][i]['sessions'][x]['available_capacity_dose2']
@@ -98,6 +94,7 @@ def user_dict(request):
   districts = list(User_details.objects.filter(user__in=users).values_list('user_district', flat=True))
   district_ids = list(District.objects.filter(id__in=districts).values_list('district_id', flat=True))
   print(district_ids)
+
   return JsonResponse(district_ids, safe=False)
   
 
@@ -144,7 +141,7 @@ def districts(request):
   state_name = data.get('state')
   state = State.objects.get(state_name=state_name)
   districts = list(District.objects.filter(state=state).values_list('district_name', flat=True))
-  print(districts)
+
   return JsonResponse(districts, safe=False)
 
 

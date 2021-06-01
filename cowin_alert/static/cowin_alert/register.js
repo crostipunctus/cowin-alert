@@ -43,8 +43,8 @@ const csrftoken = getCookie('csrftoken');
   console.log(data)
   district_selector.style.display = 'block'
 
-  let i, L = district_selector.options.length - 1;
-  for (i = L; i >= 0; i--) {
+  let i, x = district_selector.options.length - 1;
+  for (i = x; i >= 0; i--) {
     district_selector.remove(i)
   }
 
