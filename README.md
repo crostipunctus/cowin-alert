@@ -1,5 +1,5 @@
 # cowin-alert
-#### Video Demo:  <URL HERE>
+#### Video Demo:  <https://youtu.be/8qqBooju3YA>
 #### Description:
 
 Cowin-alert is a web-app that alerts signed-up users if vaccination slots open in the district of their choosing. 
@@ -30,3 +30,6 @@ The chained dropdown list in the register page was a challenge. The program had 
 
 ##### Models:
 The models I have used are: State, District, User_details, Center(this is the vaccination center) and Slots. State, district, center and slots are self-explanatory. User_details is an extention of the default User model in Django to store district and dose information. 
+
+##### Admin.py:
+This file registers models for the default admin portal that Django comes with. 
